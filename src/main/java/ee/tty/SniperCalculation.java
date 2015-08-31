@@ -12,6 +12,7 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +41,28 @@ public class SniperCalculation {
             saxParser.parse(inputStream, rHandler);
             List<Segment> segments = rHandler.segments;
             List<Vertex> vertices = rHandler.vertices;
+
+            List<Vertex> changedVertex = new ArrayList<Vertex>();
+            List<Segment> changedSegment = new ArrayList<Segment>();
+            Integer maxThreatLevel = Integer.parseInt(UtilsClass.getPropValue("maxThreatLevel"));
+
+            for(Situation situation:situations) {
+                for (Vertex vertex : vertices) {
+                    if (UtilsClass.isInDistanceFromSniper(situation.getLatitude().doubleValue(),
+                            situation.getLongitude().doubleValue(),vertex.getLatY().doubleValue(), vertex.getLonX().doubleValue())) {
+                        vertex.setThreatLevel(maxThreatLevel);
+                        changedVertex.add(vertex);
+                        for(Segment segment:segments) {
+                            if(segment.getStart().equals(vertex.getId()) || segment.getEnd().equals(vertex.getId())) {
+                                segment.setThreatLevel(maxThreatLevel);
+                                changedSegment.add(segment);
+                            }
+                        }
+                    }
+                }
+            }
+
+
 
         } catch (Exception e) {
             e.printStackTrace();

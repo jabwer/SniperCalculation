@@ -31,4 +31,12 @@ public class Segment extends RoutingInfo{
     public void setType(String type) {
         this.type = type;
     }
+
+    public double getStartDouble() {
+        return Double.parseDouble(this.start);
+    }
+
+    public double getEndDouble() {
+        return Double.parseDouble(this.end);
+    }
 }
