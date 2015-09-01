@@ -4,6 +4,7 @@ import ee.tty.model.Segment;
 import ee.tty.model.Situation;
 import ee.tty.model.Vertex;
 import ee.tty.utils.RoutingHandler;
+import ee.tty.utils.SituationChangesWriter;
 import ee.tty.utils.SituationHandler;
 import ee.tty.utils.UtilsClass;
 
@@ -47,11 +48,13 @@ public class SniperCalculation {
             Integer maxThreatLevel = Integer.parseInt(UtilsClass.getPropValue("maxThreatLevel"));
 
             for(Situation situation:situations) {
+                situation.setDangerZoneRadius(Integer.parseInt(UtilsClass.getPropValue("sniperRange")));
                 for (Vertex vertex : vertices) {
                     if (UtilsClass.isInDistanceFromSniper(situation.getLatitude().doubleValue(),
                             situation.getLongitude().doubleValue(),vertex.getLatY().doubleValue(), vertex.getLonX().doubleValue())) {
                         vertex.setThreatLevel(maxThreatLevel);
-                        changedVertex.add(vertex);
+                        if(!changedVertex.contains(vertex))
+                            changedVertex.add(vertex);
                         for(Segment segment:segments) {
                             if(segment.getStart().equals(vertex.getId()) || segment.getEnd().equals(vertex.getId())) {
                                 segment.setThreatLevel(maxThreatLevel);
@@ -62,7 +65,7 @@ public class SniperCalculation {
                 }
             }
 
-
+            SituationChangesWriter.writeSituationChangesXml(situations);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -12,6 +12,7 @@ public class Situation {
     private BigDecimal latitude;
     private BigDecimal altitude;
     private Integer threatLevel;
+    private Integer dangerZoneRadius;
 
     public Situation(){};
 
@@ -70,5 +71,14 @@ public class Situation {
 
     public void setThreatLevel(Integer threatLevel) {
         this.threatLevel = threatLevel;
+    }
+
+
+    public Integer getDangerZoneRadius() {
+        return dangerZoneRadius;
+    }
+
+    public void setDangerZoneRadius(Integer dangerZoneRadius) {
+        this.dangerZoneRadius = dangerZoneRadius;
     }
 }

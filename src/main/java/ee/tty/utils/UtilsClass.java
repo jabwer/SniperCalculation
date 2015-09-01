@@ -64,4 +64,11 @@ public class UtilsClass {
         else
             return false;
     }
+
+    public static void deleteFile(String fileLoc) {
+        File f = new File(fileLoc);
+        if(f.exists() && !f.isDirectory()) {
+            f.delete();
+        }
+    }
 }
