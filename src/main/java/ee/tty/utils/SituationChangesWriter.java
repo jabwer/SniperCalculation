@@ -47,6 +47,8 @@ public class SituationChangesWriter {
                 }
                 writer.writeEndElement();
                 writer.writeEndElement();
+            } catch(Exception e) {
+               e.printStackTrace();
             } finally {
                 if (writer != null)
                     writer.close();
@@ -67,8 +69,8 @@ public class SituationChangesWriter {
             writer.writeAttribute("name", sit.getName());
             writer.writeAttribute("type", sit.getType());
             writer.writeEmptyElement("latlng");
-            writer.writeAttribute("lonX", df.format(sit.getLongitude()));
-            writer.writeAttribute("latY", df.format(sit.getLatitude()));
+            writer.writeAttribute("lonX", df.format(sit.getLongitude()).replace(',','.'));
+            writer.writeAttribute("latY", df.format(sit.getLatitude()).replace(',', '.'));
             writer.writeEmptyElement("description");
             writer.writeStartElement("properties");
 
@@ -78,13 +80,11 @@ public class SituationChangesWriter {
             writer.writeAttribute("name", "Altitude");
             writer.writeAttribute("type", "number");
             writer.writeAttribute("value", df.format(sit.getAltitude()));
-            writer.writeEndElement();
 
             writer.writeEmptyElement("property");
             writer.writeAttribute("name", "Threat level");
             writer.writeAttribute("type", "number");
             writer.writeAttribute("value", df.format(sit.getThreatLevel()));
-            writer.writeEndElement();
 
             writer.writeEmptyElement("property");
             writer.writeAttribute("name", "Danger zone radius");
@@ -92,7 +92,6 @@ public class SituationChangesWriter {
             writer.writeAttribute("value", df.format(sit.getDangerZoneRadius()));
             writer.writeEndElement();
 
-            writer.writeEndElement();
             writer.writeEndElement();
         } catch (XMLStreamException e) {
             e.printStackTrace();
