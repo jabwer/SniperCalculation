@@ -123,4 +123,23 @@ public class RoutingInfo {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "RoutingInfo{" +
+                "id='" + id + '\'' +
+                ", length=" + length +
+                ", width=" + width +
+                ", groundType='" + groundType + '\'' +
+                ", environment='" + environment + '\'' +
+                ", roadType='" + roadType + '\'' +
+                ", roadInfrastructure='" + roadInfrastructure + '\'' +
+                ", maxSpeed=" + maxSpeed +
+                ", maxBearingCapacity=" + maxBearingCapacity +
+                ", unitsHostility='" + unitsHostility + '\'' +
+                ", altitude=" + altitude +
+                ", threatLevel=" + threatLevel +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

@@ -24,4 +24,12 @@ public class Vertex extends RoutingInfo{
     public void setLonX(BigDecimal lonX) {
         this.lonX = lonX;
     }
+
+    @Override
+    public String toString() {
+        return "Vertex{" +
+                "latY=" + latY +
+                ", lonX=" + lonX +
+                '}';
+    }
 }

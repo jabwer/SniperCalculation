@@ -3,10 +3,7 @@ package ee.tty;
 import ee.tty.model.Segment;
 import ee.tty.model.Situation;
 import ee.tty.model.Vertex;
-import ee.tty.utils.RoutingHandler;
-import ee.tty.utils.SituationChangesWriter;
-import ee.tty.utils.SituationHandler;
-import ee.tty.utils.UtilsClass;
+import ee.tty.utils.*;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -51,11 +48,13 @@ public class SniperCalculation {
                 situation.setDangerZoneRadius(Integer.parseInt(UtilsClass.getPropValue("sniperRange")));
                 for (Vertex vertex : vertices) {
                     if (UtilsClass.isInDistanceFromSniper(situation.getLatitude().doubleValue(),
-                            situation.getLongitude().doubleValue(),vertex.getLatY().doubleValue(), vertex.getLonX().doubleValue())) {
+                            situation.getLongitude().doubleValue(),vertex.getLatY().doubleValue(), vertex.getLonX().doubleValue()) &&
+                            situation.getAltitude().doubleValue() >= vertex.getAltitude().doubleValue()) {
                         vertex.setThreatLevel(maxThreatLevel);
                         if(!changedVertex.contains(vertex))
                             changedVertex.add(vertex);
                         for(Segment segment:segments) {
+                            System.out.println("Vertex id = " + vertex.getId() + "; segment start=" + segment.getStart() + "; segment end = " + segment.getEnd());
                             if(segment.getStart().equals(vertex.getId()) || segment.getEnd().equals(vertex.getId())) {
                                 segment.setThreatLevel(maxThreatLevel);
                                 changedSegment.add(segment);
@@ -66,6 +65,7 @@ public class SniperCalculation {
             }
 
             SituationChangesWriter.writeSituationChangesXml(situations);
+            RoutingChangesWriter.writeRoutingChangesXml(changedSegment, changedVertex);
 
         } catch (Exception e) {
             e.printStackTrace();

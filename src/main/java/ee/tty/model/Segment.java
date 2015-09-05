@@ -39,4 +39,13 @@ public class Segment extends RoutingInfo{
     public double getEndDouble() {
         return Double.parseDouble(this.end);
     }
+
+    @Override
+    public String toString() {
+        return "Segment{" +
+                "start='" + start + '\'' +
+                ", end='" + end + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }
