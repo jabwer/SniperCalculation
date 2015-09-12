@@ -9,6 +9,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,9 @@ public class SniperCalculation {
                 SAXParser saxParser = factory.newSAXParser();
                 SituationHandler handler = new SituationHandler();
                 InputStream inputStream = new ByteArrayInputStream(situationXml.getBytes(Charset.forName("UTF-8")));
-                saxParser.parse(inputStream, handler);
+                UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(inputStream);
+                ubis.skipBOM();
+                saxParser.parse(ubis, handler);
                 List<Situation> situations = handler.situations;
 
 
@@ -35,7 +39,9 @@ public class SniperCalculation {
                 String routingXml = UtilsClass.readXmlFromFile(xmlLocation);
                 RoutingHandler rHandler = new RoutingHandler();
                 inputStream = new ByteArrayInputStream(routingXml.getBytes(Charset.forName("UTF-8")));
-                saxParser.parse(inputStream, rHandler);
+                ubis = new UnicodeBOMInputStream(inputStream);
+                ubis.skipBOM();
+                saxParser.parse(ubis, rHandler);
                 List<Segment> segments = rHandler.segments;
                 List<Vertex> vertices = rHandler.vertices;
 
@@ -65,6 +71,15 @@ public class SniperCalculation {
 
                 SituationChangesWriter.writeSituationChangesXml(situations);
                 RoutingChangesWriter.writeRoutingChangesXml(changedSegment, changedVertex);
+                inputStream.close();
+                ubis.close();
+
+                URL url = new URL(UtilsClass.getPropValue("agentHttp"));
+                HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                //connection.setRequestMethod("GET");
+                //con.setRequestProperty("User-Agent", USER_AGENT);
+                int responseCode = con.getResponseCode();
+
 
             } catch (Exception e) {
                 e.printStackTrace();

@@ -39,7 +39,7 @@ public class UtilsClass {
             while((line=br.readLine()) != null) {
                 sb.append(line.trim());
             }
-
+            br.close();
             return sb.toString();
         } catch (Exception e) {
             System.out.println("Exception e: " + e.getMessage());
@@ -71,4 +71,6 @@ public class UtilsClass {
             f.delete();
         }
     }
+
+
 }
