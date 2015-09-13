@@ -25,23 +25,22 @@ public class SniperCalculation {
                 String xmlLocation = UtilsClass.getPropValue("situationXml");
 
                 String situationXml = UtilsClass.readXmlFromFile(xmlLocation);
+                situationXml = situationXml.substring(situationXml.indexOf("<?xml"));
+
                 SAXParserFactory factory = SAXParserFactory.newInstance();
                 SAXParser saxParser = factory.newSAXParser();
                 SituationHandler handler = new SituationHandler();
                 InputStream inputStream = new ByteArrayInputStream(situationXml.getBytes(Charset.forName("UTF-8")));
-                UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(inputStream);
-                ubis.skipBOM();
-                saxParser.parse(ubis, handler);
+                saxParser.parse(inputStream, handler);
                 List<Situation> situations = handler.situations;
 
 
                 xmlLocation = UtilsClass.getPropValue("routingXml");
                 String routingXml = UtilsClass.readXmlFromFile(xmlLocation);
+                routingXml = routingXml.substring(situationXml.indexOf("<?xml"));
                 RoutingHandler rHandler = new RoutingHandler();
                 inputStream = new ByteArrayInputStream(routingXml.getBytes(Charset.forName("UTF-8")));
-                ubis = new UnicodeBOMInputStream(inputStream);
-                ubis.skipBOM();
-                saxParser.parse(ubis, rHandler);
+                saxParser.parse(inputStream, rHandler);
                 List<Segment> segments = rHandler.segments;
                 List<Vertex> vertices = rHandler.vertices;
 
@@ -72,7 +71,6 @@ public class SniperCalculation {
                 SituationChangesWriter.writeSituationChangesXml(situations);
                 RoutingChangesWriter.writeRoutingChangesXml(changedSegment, changedVertex);
                 inputStream.close();
-                ubis.close();
 
                 URL url = new URL(UtilsClass.getPropValue("agentHttp"));
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
