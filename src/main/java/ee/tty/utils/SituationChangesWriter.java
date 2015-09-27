@@ -6,6 +6,8 @@ import ee.tty.model.Situation;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -17,7 +19,8 @@ public class SituationChangesWriter {
     public static void writeSituationChangesXml(List<Situation> sits) {
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
         try {
-            XMLStreamWriter writer = new IndentingXMLStreamWriter(factory.createXMLStreamWriter(new FileWriter(UtilsClass.getPropValue("situationChangesXml"))));
+        	FileOutputStream output = new FileOutputStream(UtilsClass.getPropValue("situationChangesXml"));
+        	XMLStreamWriter writer = new IndentingXMLStreamWriter(factory.createXMLStreamWriter(output));
             try {
                 UtilsClass.deleteFile(UtilsClass.getPropValue("situationChangesXml"));
                 boolean redForces = false;
@@ -47,11 +50,12 @@ public class SituationChangesWriter {
                 }
                 writer.writeEndElement();
                 writer.writeEndElement();
+                writer.flush();
             } catch(Exception e) {
-               e.printStackTrace();
+                e.printStackTrace();
             } finally {
-                if (writer != null)
-                    writer.close();
+                writer.close();
+                output.close();
             }
         } catch (Exception e) {
             e.printStackTrace();

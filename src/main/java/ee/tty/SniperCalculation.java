@@ -10,6 +10,7 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class SniperCalculation {
 
                 String situationXml = UtilsClass.readXmlFromFile(xmlLocation);
                 situationXml = situationXml.substring(situationXml.indexOf("<?xml"));
+                UtilsClass.deleteFile(xmlLocation);
 
                 SAXParserFactory factory = SAXParserFactory.newInstance();
                 SAXParser saxParser = factory.newSAXParser();
@@ -33,16 +35,17 @@ public class SniperCalculation {
                 InputStream inputStream = new ByteArrayInputStream(situationXml.getBytes(Charset.forName("UTF-8")));
                 saxParser.parse(inputStream, handler);
                 List<Situation> situations = handler.situations;
-
+                inputStream.close();
 
                 xmlLocation = UtilsClass.getPropValue("routingXml");
                 String routingXml = UtilsClass.readXmlFromFile(xmlLocation);
-                routingXml = routingXml.substring(situationXml.indexOf("<?xml"));
+                routingXml = routingXml.substring(routingXml.indexOf("<?xml"));
                 RoutingHandler rHandler = new RoutingHandler();
                 inputStream = new ByteArrayInputStream(routingXml.getBytes(Charset.forName("UTF-8")));
                 saxParser.parse(inputStream, rHandler);
                 List<Segment> segments = rHandler.segments;
                 List<Vertex> vertices = rHandler.vertices;
+                inputStream.close();
 
                 List<Vertex> changedVertex = new ArrayList<Vertex>();
                 List<Segment> changedSegment = new ArrayList<Segment>();
@@ -76,8 +79,12 @@ public class SniperCalculation {
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 //connection.setRequestMethod("GET");
                 //con.setRequestProperty("User-Agent", USER_AGENT);
-                int responseCode = con.getResponseCode();
-
+                try {
+                	int responseCode = con.getResponseCode();
+                } catch (SocketException e) {
+                	e.printStackTrace();
+                }
+				Thread.sleep(1000);
 
             } catch (Exception e) {
                 e.printStackTrace();

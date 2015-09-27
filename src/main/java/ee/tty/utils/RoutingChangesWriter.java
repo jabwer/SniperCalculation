@@ -7,6 +7,8 @@ import ee.tty.model.Vertex;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
+
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -22,7 +24,8 @@ public class RoutingChangesWriter {
         df.setMinimumFractionDigits(0);
         df.setGroupingUsed(false);
         try {
-            XMLStreamWriter writer = new IndentingXMLStreamWriter(factory.createXMLStreamWriter(new FileWriter(UtilsClass.getPropValue("routingChangesXml"))));
+        	FileOutputStream outputStream = new FileOutputStream(UtilsClass.getPropValue("routingChangesXml"));
+        	XMLStreamWriter writer = new IndentingXMLStreamWriter(factory.createXMLStreamWriter(outputStream));
             UtilsClass.deleteFile(UtilsClass.getPropValue("routingChangesXml"));
             try {
                 writer.writeStartDocument();
@@ -62,12 +65,12 @@ public class RoutingChangesWriter {
                 }
 
                 writer.writeEndElement();
-
+                writer.flush();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                if (writer != null)
-                    writer.close();
+                writer.close();
+                outputStream.close();
             }
         } catch (Exception e) {
             e.printStackTrace();

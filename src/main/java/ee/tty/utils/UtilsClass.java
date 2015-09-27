@@ -30,7 +30,7 @@ public class UtilsClass {
     }
 
     public static String readXmlFromFile(String location) {
-        try {
+    	try {
             File file = new File(location);
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
