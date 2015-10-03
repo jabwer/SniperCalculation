@@ -65,6 +65,7 @@ public class RoutingChangesWriter {
                 }
 
                 writer.writeEndElement();
+                writer.writeEndElement();
                 writer.flush();
             } catch (Exception e) {
                 e.printStackTrace();

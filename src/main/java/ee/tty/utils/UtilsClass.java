@@ -71,6 +71,11 @@ public class UtilsClass {
             f.delete();
         }
     }
+    
+    public static boolean fileExists(String fileLoc) {
+    	File f = new File(fileLoc);
+    	return f.exists();
+    }
 
 
 }

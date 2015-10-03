@@ -24,7 +24,11 @@ public class SniperCalculation {
         while(true) {
             try {
                 String xmlLocation = UtilsClass.getPropValue("situationXml");
-
+                
+                if(!UtilsClass.fileExists(xmlLocation)) {
+                	Thread.sleep(1000);
+                	continue;
+                }
                 String situationXml = UtilsClass.readXmlFromFile(xmlLocation);
                 situationXml = situationXml.substring(situationXml.indexOf("<?xml"));
                 UtilsClass.deleteFile(xmlLocation);
@@ -36,7 +40,8 @@ public class SniperCalculation {
                 saxParser.parse(inputStream, handler);
                 List<Situation> situations = handler.situations;
                 inputStream.close();
-
+                UtilsClass.deleteFile(xmlLocation);
+                
                 xmlLocation = UtilsClass.getPropValue("routingXml");
                 String routingXml = UtilsClass.readXmlFromFile(xmlLocation);
                 routingXml = routingXml.substring(routingXml.indexOf("<?xml"));
@@ -61,10 +66,13 @@ public class SniperCalculation {
                             if(!changedVertex.contains(vertex))
                                 changedVertex.add(vertex);
                             for(Segment segment:segments) {
-                                System.out.println("Vertex id = " + vertex.getId() + "; segment start=" + segment.getStart() + "; segment end = " + segment.getEnd());
-                                if(segment.getStart().equals(vertex.getId()) || segment.getEnd().equals(vertex.getId())) {
-                                    segment.setThreatLevel(maxThreatLevel);
-                                    changedSegment.add(segment);
+                                //System.out.println("Vertex id = " + vertex.getId() + "; segment start=" + segment.getStart() + "; segment end = " + segment.getEnd());
+                                if((segment.getStart().equals(vertex.getId()) || segment.getEnd().equals(vertex.getId()))
+                                		&& situation.getAltitude().doubleValue() >= segment.getAltitude().doubleValue()) {
+                                    if(!changedSegment.contains(segment)) {
+                                    	segment.setThreatLevel(maxThreatLevel);
+                                    	changedSegment.add(segment);
+                                    }
                                 }
                             }
                         }
@@ -77,7 +85,7 @@ public class SniperCalculation {
 
                 URL url = new URL(UtilsClass.getPropValue("agentHttp"));
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
-                //connection.setRequestMethod("GET");
+                con.setRequestMethod("GET");
                 //con.setRequestProperty("User-Agent", USER_AGENT);
                 try {
                 	int responseCode = con.getResponseCode();
