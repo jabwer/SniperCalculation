@@ -7,9 +7,7 @@ import ee.tty.model.Vertex;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -39,9 +37,7 @@ public class RoutingChangesWriter {
                         writer.writeAttribute("lonX", df.format(ver.getLonX()).replace(',','.'));
                         writer.writeAttribute("latY", df.format(ver.getLatY()).replace(',','.'));
                         writer.writeEmptyElement("description");
-                        writer.writeStartElement("weights");
                         writeWeights(writer, ver, df);
-                        writer.writeEndElement();
                         writer.writeEndElement();
                     }
                     writer.writeEndElement();
@@ -57,9 +53,7 @@ public class RoutingChangesWriter {
                         writer.writeAttribute("type", seg.getType());
 
                         writer.writeEmptyElement("description");
-                        writer.writeStartElement("weights");
                         writeWeights(writer, seg, df);
-                        writer.writeEndElement();
                         writer.writeEndElement();
                     }
                 }
